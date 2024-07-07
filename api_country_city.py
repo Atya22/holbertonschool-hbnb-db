@@ -86,4 +86,4 @@ def delete_city(city_id):
     return '', 20
 
 if __name__ == '__main__':
-    app.run(debu=True)
+    app.run(debug=True)
