@@ -80,7 +80,7 @@ def update_city(city_id):
 @app.route('/cities/<city_id>', methods=['DELETE'])
 def delete_city(city_id):
     city = data_manager.get(City, city_id)
-    if not city
+    if not city:
         abort(404, description=f"City with ID '{city_id}' not found")
     data_manager.delete(city)
     return '', 204
