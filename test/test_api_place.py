@@ -1,8 +1,7 @@
 #!/usr/bin/python3
 import unittest
 import json
-from api.api_place import data_manager
-from app import app
+from api.api_place import app, data_manager
 from model.city import City
 from model.amenities import Amenities
 
