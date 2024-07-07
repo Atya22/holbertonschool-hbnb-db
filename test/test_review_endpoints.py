@@ -1,8 +1,8 @@
 #!/usr/bin/python3
 import unittest
-from app import app
-from persistence.data_manager import DataManager
+from api.api_review import app
 from model.review import Review
+from persistence.data_manager import DataManager
 
 class ReviewAPITestCase(unittest.TestCase):
     def setUp(self):
