@@ -3,8 +3,7 @@
 
 import unittest
 import json
-from api.api_country_city import data_manager
-from app import app
+from api.api_country_city import app, data_manager
 from model.city import City
 
 class FlaskTestCase(unittest.TestCase):
@@ -24,7 +23,7 @@ class FlaskTestCase(unittest.TestCase):
         self.assertEqual(response.status_code, 200)
         data = json.loads(response.data)
         self.assertEqual(data['iso_3166_1_alpha_2'], 'US')
-    
+
     def test_get_country_by_code_not_found(self):
         response = self.app.get('/countries/XX')
         self.assertEqual(response.status_code, 404)
