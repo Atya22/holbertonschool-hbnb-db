@@ -1,47 +1,58 @@
 #!/usr/bin/python3
-from flask import Blueprint, jsonify, request, abort
+from flask import Flask, jsonify, request
 from model.amenities import Amenities
 from persistence.data_manager import DataManager
+from persistence.database import db
 
-
-api_amenities = Blueprint('api_amenities', __name__)
+app = Flask(__name__)
 data_manager = DataManager()
 
-@api_amenities.route('/amenities', methods=['POST'])
+@app.route('/amenities', methods=['POST'])
 def create_amenity():
     data = request.get_json()
+    if 'name' not in data or not data['name'].strip():
+        return jsonify({"error": "Name is required"}), 400
+
+    #Create a new amenity
     amenity = Amenities(name=data['name'])
     data_manager.save(amenity)
     return jsonify(amenity.to_dict()), 201
 
-@api_amenities.route('/amenities', methods=['GET'])
+@app.route('/amenities', methods=['GET'])
 def get_amenities():
-    amenities = list(data_manager.storage.get("Amenities", {}).values())
-    return jsonify(amenities), 200
+    amenities = data_manager.query_all(Amenities) #Use class instead of name
+    return jsonify([amenity.to_dict() for amenity in amenities]), 200
 
-@api_amenities.route('/amenities/<amenity_id>', methods=['GET'])
+@app.route('/amenities/<amenity_id>', methods=['GET'])
 def get_amenity(amenity_id):
-    amenity = data_manager.get(amenity_id, 'Amenities')
+    amenity = data_manager.get(Amenities, amenity_id) #Use class instead of name
     if not amenity:
-        abort(404, description="Amenity not found")
-    return jsonify(amenity), 200
+        return jsonify({"error": "Amenity not found"}), 404
+    return jsonify(amenity.to_dict()), 200
 
-@api_amenities.route('/amenities/<amenity_id>', methods=['PUT'])
+@app.route('/amenities/<amenity_id>', methods=['PUT'])
 def update_amenity(amenity_id):
+    #
     data = request.get_json()
-    amenity = data_manager.get(amenity_id, 'Amenities')
+    amenity = data_manager.get(Amenities, amenity_id) #Use class instead of name
     if not amenity:
-        abort(404, description="Amenity not found")
+        return jsonify({"error": "Amenity not found"}), 404
 
-    amenity_instance = Amenities(name=data['name'])
-    amenity_instance.id = amenity_id
-    data_manager.update(amenity_instance)
-    return jsonify(amenity_instance.to_dict()), 200
+    if 'name' not in data or not data['name'].strip():
+        return jsonify({"error": "Name is required"}), 400
 
-@api_amenities.route('/amenities/<amenity_id>', methods=['DELETE'])
+    amenity.name = data['name']
+    data_manager.update(amenity)
+    return jsonify(amenity.to_dict()), 200
+
+@app.route('/amenities/<amenity_id>', methods=['DELETE'])
 def delete_amenity(amenity_id):
-    amenity = data_manager.get(amenity_id, 'Amenities')
+    #
+    amenity = data_manager.get(Amenities, amenity_id) #Use class instead of name
     if not amenity:
-        abort(404, description="Amenity not found")
-    data_manager.delete(amenity_id, 'Amenities')
+        return jsonify({"error": "Amenity not found"}), 404
+    data_manager.delete(amenity)
     return '', 204
+
+if __name__ == '__main__':
+    app.run(debug=True)
