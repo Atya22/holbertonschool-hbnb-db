@@ -8,13 +8,13 @@ from persistence.database import db
 from api import api_controller, api_amenities, api_country_city, api_place, api_review
 
 
-# Cargar variables de entorno desde .env
+#Load environment variables from .env
 load_dotenv()
 
-# Configurar la aplicación Flask
+# Set up the Flask application
 app = Flask(__name__)
 
-# Configuración de la base de datos
+# Database configuration
 """db_uri = 'sqlite:///development.db' if os.getenv('FLASK_ENV') == 'development' else os.getenv('DATABASE_URL', 'sqlite:///mydatabase.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False"""
@@ -22,10 +22,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False"""
 config_class = 'config.DevelopmentConfig' if os.getenv('ENV') == 'development' else 'config.ProductionConfig'
 app.config.from_object(config_class)
 
-# Inicializar la base de datos con la aplicación
+# Initialize the database with the application
 db.init_app(app)
 
-# Registrar todos los Blueprints de Flask
+# Register all Flask blueprints
 app.register_blueprint(api_controller.app)
 app.register_blueprint(api_amenities.app)
 app.register_blueprint(api_country_city.app)
@@ -34,11 +34,11 @@ app.register_blueprint(api_review.app)
 
 def run_flask_app():
     with app.app_context():
-        db.create_all()  # Crear todas las tablas de la base de datos dentro del contexto de la aplicación
+        db.create_all()  #
         app.run(debug=app.config['DEBUG'], use_reloader=False)
 
 
-# CRUD en la consola
+# CRUD in the console
 class CRUD:
     def __init__(self):
         self.data = []
@@ -109,7 +109,7 @@ class CRUDConsole(cmd.Cmd):
         return True
 
 if __name__ == '__main__':
-    # Ejecutar el servidor Flask en un hilo separado
+    #Flask server in a separate thread
     flask_thread = threading.Thread(target=run_flask_app)
     flask_thread.daemon = True
     flask_thread.start()
