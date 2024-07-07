@@ -14,22 +14,3 @@ class IPersistenceManager(ABC):
     def save(self, entity):
         pass
 
-    @abstractmethod
-    def get(self, entity_type, entity_id):
-        pass
-
-    @abstractmethod
-    def update(self, entity):
-        pass
-
-    @abstractmethod
-    def delete(self, entity):
-        pass
-
-    @abstractmethod
-    def query_all(self, entity_type):
-        pass
-
-    @abstractmethod
-    def query_all_by_filter(self, entity_type, filter_condition):
-        pass
