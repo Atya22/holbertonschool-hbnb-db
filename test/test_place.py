@@ -32,6 +32,34 @@ class TestPlace(unittest.TestCase):
         self.assertIsInstance(self.place.create_time, datetime)
         self.assertIsInstance(self.place.update_time, datetime)
 
+    def test_unique_host(self):
+        """Test that a place can only have one host."""
+        with self.assertRaises(ValueError):
+            Place(
+                name="Test Place 2",
+                description="Another cozy place",
+                address="456 Test Ave",
+                city="Testville",
+                latitude=34.05,
+                longitude=-118.25,
+                host="Existing Host",
+                number_of_rooms=2,
+                bathrooms=1,
+                price_per_night=80,
+                max_guests=2
+            )
+
+    def test_add_amenity(self):
+        """Test adding amenities to a place."""
+        self.place.add_amenity("WiFi")
+        self.assertIn("WiFi", self.place.amenities)
+
+    def test_remove_amenity(self):
+        """Test removing amenities from a place."""
+        self.place.add_amenity("WiFi")
+        self.place.remove_amenity("WiFi")
+        self.assertNotIn("WiFi", self.place.amenities)
+
     def test_update_attributes(self):
         """Test updating the attributes of a place."""
         self.place.update(name="Updated Place", price_per_night=150)
