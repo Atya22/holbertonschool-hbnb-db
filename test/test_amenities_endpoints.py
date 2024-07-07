@@ -2,7 +2,7 @@
 """Unittest for Amenities Endpoints"""
 
 import unittest
-from app import app
+from api.api_amenities import app
 from model.amenities import Amenities
 from persistence.data_manager import DataManager
 
