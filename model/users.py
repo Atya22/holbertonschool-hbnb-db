@@ -1,22 +1,24 @@
 #!/usr/bin/python3
+from sqlalchemy import Column, String, Boolean, DateTime
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
 from datetime import datetime
-from model.base import Base
-
+from model.base import Base 
 
 class User(Base):
     """
         This class will inherit the atributes
         to the class Host and Guest
     """
-    existing_email = set()
+    __tablename__ = 'users'
 
-    def __init__(self, first_name, last_name, email, password):
-
-        super().__init__()
-        self.first_name = first_name
-        self.last_name = last_name
-        self.email = email
-        self.password = password
+    id = Column(String(36), primary_key=True)
+    first_name = Column(String(50), nullable=False)
+    last_name = Column(String(50), nullable=False)
+    email = Column(String(100), unique=True, nullable=False)
+    password = Column(String(100), nullable=False)
+    create_time = Column(DateTime, default=datetime.now)
+    update_time = Column(DateTime, default=datetime.now, onupdate=datetime.now)
 
     def to_dict(self):
         return {
@@ -42,12 +44,13 @@ class User(Base):
         return f"User(Id: {self.id}, name: {self.first_name},\
  email: {self.email})"
 
-class Host(User):
 
-    def __init__(self, first_name, last_name, email, password):
-        super().__init__(first_name, last_name, email, password)
-        self.name_place = []
-        self.amenities = []
+class Host(User):
+    __tablename__ = 'hosts'
+
+    id = Column(String(36), primary_key=True)
+    name_place = relationship("Place", back_populates="host")
+    amenities = relationship("Amenities", secondary="user_amenities")
 
     def add_place(self, place):
         self.name_place.append(place)
@@ -60,11 +63,13 @@ class Host(User):
 
     def remove_amenities(self, amenities):
         self.amenities.remove(amenities)
-class Guest(User):
 
-    def __init__(self, first_name, last_name, email, password):
-        super().__init__(first_name, last_name, email, password)
-        self.comment = []
+
+class Guest(User):
+    __tablename__ = 'guests'
+
+    id = Column(String(36), primary_key=True)
+    comment = relationship("Review", back_populates="guest")
 
     def add_review(self, comment):
         self.comment.append(comment)
