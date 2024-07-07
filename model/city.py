@@ -1,10 +1,19 @@
 from datetime import datetime
 from model.base import Base
+from sqlalchemy import Column, String, Integer
+from sqlalchemy.orm import relationship
 
 class City(Base):
     """
     A class representing a city.
     """
+    __tablename__ = 'cities'
+    
+    id = Column(String(36), primary_key=True)
+    name = Column(String(100), nullable=False)
+    population = Column(Integer, nullable=False)
+    country_code = Column(String(5), nullable=False)
+    
     def __init__(self, name, population, country_code):
         super().__init__()
         self.name = name
