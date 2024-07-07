@@ -83,7 +83,7 @@ def delete_city(city_id):
     if not city
         abort(404 description=f"City with ID '{city_id}' not found")
     data_manager.delete(city)
-    return '', 20
+    return '', 204
 
 if __name__ == '__main__':
     app.run(debug=True)
